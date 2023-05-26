@@ -1,0 +1,165 @@
+.comment__top {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 15px; }
+
+.comment__misc {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px; }
+
+.comment__name {
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 20px;
+  letter-spacing: 0.05em; }
+
+.comment__time {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 25px;
+  color: #828282; }
+
+.comment__text {
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 22px; }
+
+.comment__image {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  border-radius: 5px; }
+
+.trainings {
+  height: auto;
+  width: 960px; }
+  .trainings__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px; }
+    .trainings__top * {
+      font-weight: 700;
+      font-size: 24px;
+      line-height: 23px; }
+  .trainings__video {
+    height: 600px;
+    margin-bottom: 50px;
+    border-radius: 5px;
+    overflow: hidden; }
+  .trainings__play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 125px;
+    height: 125px; }
+  .trainings__sample {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; }
+  .trainings__input {
+    margin-bottom: 60px; }
+  .trainings__item {
+    display: flex;
+    flex-direction: column;
+    width: 210px;
+    gap: 10px;
+    height: auto;
+    min-width: 210px; }
+    .trainings__item-frame {
+      height: 160px;
+      background-repeat: no-repeat;
+      background-size: cover;
+      border-radius: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center; }
+    .trainings__item-time {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      padding: 4px;
+      background: #E0E0E0;
+      border-radius: 5px 0px; }
+    .trainings__item-num {
+      color: #828282;
+      font-size: 22px;
+      line-height: 24px; }
+    .trainings__item-burn {
+      color: #828282;
+      font-size: 22px;
+      line-height: 22px;
+      display: flex;
+      align-items: center; }
+    .trainings__item-fire {
+      width: 14px;
+      margin-right: 7px; }
+  .trainings__trainings {
+    display: flex;
+    gap: 40px;
+    max-width: 100%; }
+  .trainings__wrapper {
+    overflow-x: scroll;
+    width: 960px;
+    margin-bottom: 50px; }
+    .trainings__wrapper::-webkit-scrollbar {
+      display: none; }
+  .trainings__comments {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 30px; }
+    .trainings__comments-top {
+      display: flex;
+      padding-top: 30px;
+      padding-bottom: 30px;
+      border-top: 1px solid #C4C4C4;
+      border-bottom: 1px solid #C4C4C4;
+      gap: 15px; }
+      .trainings__comments-top .last {
+        margin-left: auto;
+        align-items: flex-end; }
+      .trainings__comments-top div {
+        display: flex;
+        flex-direction: column;
+        gap: 8px; }
+  .trainings__program-name {
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 24px; }
+  .trainings__program-title {
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 24px; }
+  .trainings__program-likes {
+    background: linear-gradient(180deg, #71EA87 0%, #24AA2D 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 24px; }
+  .trainings__program-like {
+    width: 19px; }
+  .trainings__program-completed {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: #828282; }
+  .trainings__program__image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 3px; }
+  .trainings .comment {
+    padding-top: 30px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid #C4C4C4; }
+

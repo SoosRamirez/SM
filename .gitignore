@@ -1,0 +1,9 @@
+# Project exclude paths
+/venv/
+/SM/settings.py
+/db.sqlite3
+/media/*
+/.idea
+/main/migrations/*
+/personal/migrations/*
+

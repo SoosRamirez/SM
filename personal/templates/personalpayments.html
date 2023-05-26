@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SMARTFIT</title>
+    <link rel="stylesheet" href="../static/fonts/stylesheet.css">
+    <link rel="stylesheet" href="../static/css/SF_main.css">
+    <link rel="stylesheet" href="../static/css/SF_components.css">
+    <link rel="stylesheet" href="../static/css/SF_lk.css">
+    <link rel="stylesheet" href="../static/css/modal.css">
+    <link rel="icon" href="../../favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon">
+</head>
+<body>
+<header class="header logged">
+    <div class="modal-background modal-disabled" id='logout-modal-background'></div>
+    <div class="modal modal-disabled" id='logout-modal-box'>
+        <div class="modal-content">
+            <div class="modal-close" onclick="logoutModal()">
+                <img src="../static/images/modal-cross.svg" alt="" class="modal-close-img"/>
+            </div>
+            <div class="logout-modal">
+                <img src="../static/images/warning.svg" alt="" class="logout-modal__img">
+                <h2 class="modal-title logout-modal__title">Вы уверены?</h2>
+                <p class="logout-modal__sub">
+                    Что хотите выйти из личного кабинета
+                </p>
+                <div class="logout-modal__box">
+                    <button class='button _clear logout-modal__button' onclick="logoutModal()">
+                        <div class="button__inner">
+                            ОТМЕНИТЬ
+                        </div>
+                    </button>
+                    <form action="{% url 'logout' %}">
+                        <button class='button _red logout-modal__button' type="submit">
+                            <div class="button__inner">
+                                ВЫЙТИ
+                            </div>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="header__container wrapper">
+        <a href="/" class="header__logo-link">
+            <img src="../static/images/logo.svg" class="header__logo">
+        </a>
+        <div class="header__menu">
+            <a href="{% url 'trainers' %}"
+               {% if "trainers" in request.path %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Тренеры</a>
+            <a href="{% url 'programs' %}"
+               {% if "programs" in request.path %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Программы</a>
+            <a href="{% url 'blog' %}"
+               {% if "blog" in request.path %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Блог</a>
+            <a href="{% url 'home' %}"
+               {% if request.path == 'home' %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Сообщество</a>
+        </div>
+            <a href="{% url 'lk' %}" class="header__profile">
+                {{ request.user.username }}
+                <div class="header__avatar">{{ request.user.username.0 }}</div>
+            </a>
+        <div class='header-mobile__button hidden' onclick="mobileOpened()" id="button-menu-mobile">
+            <div class="header-mobile__line line"></div>
+        </div>
+        <div class='header-mobile__menu hidden' id="menu-mobile">
+            <a href="{% url 'trainers' %}"
+               {% if "trainers" in request.path %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Тренеры</a>
+            <a href="{% url 'programs' %}"
+               {% if "programs" in request.path %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Программы</a>
+            <a href="{% url 'blog' %}"
+               {% if "blog" in request.path %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Блог</a>
+            <a href="{% url 'home' %}"
+               {% if request.path == 'home' %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Сообщество</a>
+                <a href="{% url 'lk' %}" class="header__profile" href="{% url 'lk' %}"
+                   class="header__profile" onclick="mobileOpened()">
+                    {{ request.user.username }}
+                    <div class="header__avatar">{{ request.user.username.0 }}</div>
+                </a>
+        </div>
+    </div>
+</header>
+<div class="profile">
+    <div class="sidebar">
+        <div class="sidebar__list">
+            <a href="{% url 'lk' %}" {% if 'profile' in request.path %}class="sidebar__item active"
+               {% else %}class="sidebar__item"{% endif %}>
+                <img {% if 'profile' in request.path %}src="../static/images/lk/profile-1.svg"
+                     {% else %}src="../static/images/lk/profile.svg"{% endif %} alt="" class="sidebar__icon">
+                Профиль
+            </a>
+            <a href="{% url 'personalinfo' %}" {% if 'info' in request.path %}class="sidebar__item active"
+               {% else %}class="sidebar__item"{% endif %}>
+                <img {% if 'info' in request.path %}src="../static/images/lk/data-1.svg"
+                     {% else %}src="../static/images/lk/data.svg"{% endif %} alt="" class="sidebar__icon">
+                Данные
+            </a>
+            <a href="{% url 'personalprograms' %}"
+               {% if 'personal/programs' in request.path %}class="sidebar__item active"
+               {% else %}class="sidebar__item"{% endif %}>
+                <img {% if 'personal/programs' in request.path %}src="../static/images/lk/programs-1.svg"
+                     {% else %}src="../static/images/lk/programs.svg"{% endif %} alt="" class="sidebar__icon">
+                Программы
+            </a>
+            <a href="{% url 'personalworkouts' %}"
+               {% if 'personal/workouts' in request.path %}class="sidebar__item active"
+               {% else %}class="sidebar__item"{% endif %}>
+                <img {% if 'personal/workouts' in request.path %}src="../static/images/lk/trainings-1.svg"
+                     {% else %}src="../static/images/lk/trainings.svg"{% endif %} alt="" class="sidebar__icon">
+                Тренировки
+            </a>
+            <a href="{% url 'personalprogres' %}"
+               {% if 'personal/progres' in request.path %}class="sidebar__item active"
+               {% else %}class="sidebar__item"{% endif %}>
+                <img {% if 'personal/progres' in request.path %}src="../static/images/lk/progress-1.svg"
+                     {% else %}src="../static/images/lk/progress.svg"{% endif %} alt="" class="sidebar__icon">
+                Прогресс
+            </a>
+            <a href="{% url 'subscription' %}"
+               {% if 'personal/subscription' in request.path %}class="sidebar__item active"
+               {% else %}class="sidebar__item"{% endif %}>
+                <img {% if 'personal/subscription' in request.path %}src="../static/images/lk/subsc-1.svg"
+                     {% else %}src="../static/images/lk/subs.svg"{% endif %} alt="" class="sidebar__icon">
+                Подписка
+            </a>
+            <div class="sidebar__line"></div>
+            <div class="sidebar__logout" onclick="logoutModal()">
+                <img src="../static/images/lk/logout-1.svg" alt="" class="sidebar__icon">
+                Выход
+            </div>
+        </div>
+    </div>
+    <div class="profile__inner">
+        <div class="profile__wrapper">
+            <div class="subscription">
+                <div class="subscription__top">
+                    <h3 class="subscription__title">Моя подписка</h3>
+                    <button class='button subscription__button {% if payments.0.status %}{% else %}_red{% endif %}'>
+                        <div class="button__inner">{% if payments.0.status %}активна{% else %}не активна{% endif %}
+{#                        {{ payment.0.status}}#}
+                        </div>
+                    </button>
+                </div>
+                <h4 class="subscription__subtitle">Способы оплаты</h4>
+                <div class="subscription__methods">
+                    <div class="subscription__method">
+                        <img src="../static/images/methods/visa.svg" alt="" class="subscription__method-icon">
+                        <p class="subscription__card">
+                            427655******5215
+                        </p>
+                        <p class="subscription__method-date">
+                            <span>Дата привязки:</span>
+                            27.03.2022
+                        </p>
+                        <div class="subscription__delete">
+                            <img src="../static/images/methods/delete.svg" alt="">
+                            Удалить
+                        </div>
+                    </div>
+                </div>
+                <h4 class="subscription__subtitle">История заказов</h4>
+                <div class="subscription__table">
+                    <div class="subscription__headers grid">
+                        <div class="subscription__header">№ заказа</div>
+                        <div class="subscription__header">Подписка</div>
+                        <div class="subscription__header">Статус</div>
+                        <div class="subscription__header">Дата списания</div>
+                        <div class="subscription__header">Промокод</div>
+                        <div class="subscription__header">Сумма</div>
+                    </div>
+                    {% for i in payments %}
+                        <div class="subscription__item grid">
+                            <div class="subscription__item-field">{{ i.id }}</div>
+                            <div class="subscription__item-field">{{ i.type }}</div>
+                            <div class="subscription__item-field">{% if i.status %}
+                                <img src="../static/images/methods/ok.svg" alt="" class="subscription__item-icon"/>{% endif %}{{ i.status }}</div>
+                            <div class="subscription__item-field">{{ i.date_subscribed }}</div>
+                            <div class="subscription__item-field">{{ i.promo }}</div>
+                            <div class="subscription__item-field">{{ i.sum }} р</div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<footer class="footer">
+    <div class="footer__main">
+        <div class="wrapper footer__inner">
+            <div class="footer__links">
+                <a class="footer__link" href="{% url 'trainers' %}">
+                    Тренеры
+                </a>
+                <a class="footer__link" href="/">
+                    Сообщество
+                </a>
+                <a class="footer__link">Соглашение</a>
+                <a class="footer__link" href="{% url 'programs' %}">
+                    Программы
+                </a>
+                <a class="footer__link" href="{% url 'start' %}">
+                    Тарифы
+                </a>
+                <a class="footer__link">Обработка данных</a>
+                <a class="footer__link" href="{% url 'blog' %}">
+                    Блог
+                </a>
+                <a class="footer__link">Тренерам</a>
+                <a class="footer__link">Свяжитесь с нами</a>
+                <a class="footer__link"></a>
+            </div>
+            <div class="footer__payment">
+                <p class="footer__link n">Способы оплаты на сайте:</p>
+                <div class="footer__payment-row">
+                    <img src="../static/images/payment/mir.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/visa.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/mc.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/maestro.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/alpha.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/pay-pal.svg" alt="" class="footer__payment-icon"/>
+                </div>
+                <div class="footer__payment-row second">
+                    <img src="../static/images/payment/google.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/apple.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/tele2.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/yandex.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/mts.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/beeline.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/qiwi.svg" alt="" class="footer__payment-icon"/>
+                </div>
+            </div>
+            <div class="footer__misc">
+                <a class="footer__logo-link" href="/">
+                    <img src="../static/images/logo-gray.svg" class="footer__logo">
+                </a>
+                <div class="footer__socials">
+                    <a href="" class="footer__social">
+                        <img src="../static/images/instagram.svg" alt="" class="footer__social-icon"/>
+                    </a>
+                    <a href="" class="footer__social">
+                        <img src="../static/images/youtube.svg" alt="" class="footer__social-icon"/>
+                    </a>
+                    <a href="" class="footer__social">
+                        <img src="../static/images/vk.svg" alt="" class="footer__social-icon"/>
+                    </a>
+                    <a href="" class="footer__social">
+                        <img src="../static/images/telegram.svg" alt="" class="footer__social-icon"/>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer__creds">© 2022 SMARTFIT. Все права защищены</div>
+</footer>
+</body>
+<script>
+    const mobileOpened = () => {
+        const buttonMobileMenu = document.getElementById('button-menu-mobile')
+        buttonMobileMenu.classList.toggle('hidden')
+        buttonMobileMenu.classList.toggle('opened')
+        const mobileMenu = document.getElementById('menu-mobile')
+        mobileMenu.classList.toggle('hidden')
+        mobileMenu.classList.toggle('opened')
+    }
+    const logoutModal = () => {
+        const loginModal = document.getElementById('logout-modal-box')
+        const loginBackground = document.getElementById("logout-modal-background")
+        loginModal.classList.toggle('modal-disabled')
+        loginBackground.classList.toggle('modal-disabled')
+    }
+</script>
+</html>

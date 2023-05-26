@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SMARTFIT</title>
+    <link rel="stylesheet" href="../static/fonts/stylesheet.css">
+    <link rel="stylesheet" href="../static/css/SF_main.css">
+    <link rel="stylesheet" href="../static/css/SF_components.css">
+    <link rel="stylesheet" href="../static/css/SF_lk.css">
+    <link rel="stylesheet" href="../static/css/modal.css">
+    <link rel="stylesheet" href="../static/css/new.css">
+    <link rel="stylesheet" href="../static/css/post.css">
+    <link rel="icon" href="../../favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon">
+</head>
+<body>
+<header {% if user.is_authenticated %}class="header logged"{% else %}class="header"{% endif %}>
+    <div class="modal-background modal-disabled" id='login-modal-background'></div>
+    <div class="modal modal-disabled" id='login-modal-box'>
+        <div class="modal-content">
+            <div class="modal-close" onclick=loginModal()>
+                <img src='../static/images/modal-cross.svg' alt="" class="modal-close-img">
+            </div>
+            <div class="login-modal">
+                <form action="{% url 'login' %}" method="post">{% csrf_token %}
+                    <div class="login-modal__top">
+                        <h2 class="modal-title">
+                            Вход в аккаунт
+                        </h2>
+                    </div>
+                    <div class="login-modal__content">
+                        <label class="text-field__label">
+                            Ваш логин
+                            <div class="text-field__box">
+                                <input type="text" class='text-field' placeholder="Адрес электронной почты"
+                                       name="email">
+                            </div>
+                        </label>
+                        <label class="text-field__label">
+                            Ваш пароль
+                            <div class="text-field__box">
+                                <input type="text" class='text-field' placeholder="Пароль" name="password">
+                            </div>
+                        </label>
+                    </div>
+                    <button class='button login-modal__button' type="submit" style="margin-bottom: 20px">
+                        <div class="button__inner">
+                            Войти в аккаунт
+                        </div>
+                    </button>
+                    <p class="login-modal__bottom">У вас нет аккаунта? <a href="{% url "start" %}"
+                                                                          class="login-modal__link">Создать</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="header__container wrapper">
+        <a href="/" class="header__logo-link">
+            <img src="../static/images/logo.svg" class="header__logo">
+        </a>
+        <div class="header__menu">
+            <a href="{% url 'trainers' %}"
+               {% if "trainers" in request.path %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Тренеры</a>
+            <a href="{% url 'programs' %}"
+               {% if "programs" in request.path %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Программы</a>
+            <a href="{% url 'blog' %}"
+               {% if "blog" in request.path %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Блог</a>
+            <a href="{% url 'home' %}"
+               {% if request.path == 'home' %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Сообщество</a>
+        </div>
+        {% if user.is_authenticated %}
+            <a href="{% url "lk" %}" class="header__profile">
+                {{ request.user.username }}
+                <div class="header__avatar">{{ request.user.username.0 }}</div>
+            </a>
+        {% else %}
+            <div class="header__buttons">
+                <a href="{% url 'start' %}">
+                    <button class='button header__button' id="login-button">
+                        <div class="button__inner">
+                            Тренироваться
+                            <img src='../static/images/bolt.svg' alt="" class="button__icon">
+                        </div>
+                    </button>
+                </a>
+                <button class='button header__button _clear' id="login-button" onclick=loginModal()>
+                    <div class="button__inner">
+                        Войти
+                        <img src='../static/images/login-icon.svg' alt="" class="button__icon">
+                    </div>
+                </button>
+            </div>
+        {% endif %}
+        <div class='header-mobile__button hidden' onclick="mobileOpened()" id="button-menu-mobile">
+            <div class="header-mobile__line line"></div>
+        </div>
+        <div class='header-mobile__menu hidden' id="menu-mobile">
+            <a href="{% url 'trainers' %}"
+               {% if "trainers" in request.path %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Тренеры</a>
+            <a href="{% url 'programs' %}"
+               {% if "programs" in request.path %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Программы</a>
+            <a href="{% url 'blog' %}"
+               {% if "blog" in request.path %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Блог</a>
+            <a href="{% url 'home' %}"
+               {% if request.path == 'home' %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Сообщество</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'lk' %}" class="header__profile" href="{% url 'lk' %}"
+                   class="header__profile" onclick="mobileOpened()">
+                    {{ request.user.username }}
+                    <div class="header__avatar">{{ request.user.username.0 }}</div>
+                </a>
+            {% else %}
+                <div class="header-mobile__buttons">
+                    <a href="{% url "start" %}">
+                        <button class='button header__button' id="login-button"
+                                onclick="mobileOpened()">
+                            <div class="button__inner">
+                                Тренироваться
+                                <img src='../static/images/bolt.svg' alt="" class="button__icon">
+                            </div>
+                        </button>
+                    </a>
+                    <button class='button _clear header__button last' onclick="mobileOpened(); loginModal()">
+                        <div class="button__inner">
+                            Войти
+                        </div>
+                    </button>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</header>
+<div class="post-page page">
+    <div class="post-page__wrapper wrapper">
+        <h1 class="post-page__title title">
+            {{ post.name }}
+        </h1>
+        <div class="post-page__info">
+            {{ post.pub_date }}
+            <div class="post-page__dot"></div>
+            Время прочтения {{ post.read_time }} минут
+        </div>
+        <div class="post-page__content">
+            <img src='/media/{{ post.main_pic }}' alt="" class="post-page__image"/>
+            <p class="post-page__paragraph">
+                {{ post.text|safe }}
+            </p>
+        </div>
+        <div class="post-page__form">
+            <form action="{% url 'post' post.id %}" method="post" id="comment">{% csrf_token %}
+                <h1 class="post-page__title title form-title">Отзывы о статье</h1>
+                <div class="post-page__form-top">
+                    <label class="text-field__label">
+                        Ваше имя
+                        <div class="text-field__box">
+                            <input type="text" class='text-field' placeholder="Имя" name="name">
+                        </div>
+                    </label>
+                    <label class="text-field__label">
+                        Ваша почта
+                        <div class="text-field__box">
+                            <input type="text" class='text-field' placeholder="Почта" name="email">
+                        </div>
+                    </label>
+                </div>
+                <label class="text-field__label"  style="margin-bottom: 20px">
+                    Ваш отзыв
+                    <div class="text-field__box">
+                        <textarea class='text-field__area text-field' placeholder="Текст отзыва" name="text"></textarea>
+                    </div>
+                </label>
+                <input type="hidden" value="{{ post.id }}" name="post">
+                <button class='button ' type="submit" form="comment">
+                    <div class="button__inner">
+                        оставить комментарий
+                        <img src='../static/images/bolt.svg' alt="" class="button__icon">
+                    </div>
+                </button>
+            </form>
+        </div>
+        <div class="post-page__comments">
+            {% for comm in comments %}
+                <div class="comment">
+                    <div class="comment__top">
+                        <img src='../static/images/comment-avatar.png' alt="" class="comment__image"/>
+                        <div class="comment__misc">
+                            <p class="comment__name">{{ comm.name }}</p>
+                            <p class="comment__time">{{ comm.pub_date|date }}</p>
+                        </div>
+                    </div>
+                    <div class="comment__text">
+                        {{ comm.text }}
+                    </div>
+                </div>
+            {% endfor %}
+            <Comment/>
+            <Comment/>
+            <Comment/>
+            <Comment/>
+            <Comment/>
+        </div>
+
+        <div class="post-page__similar">
+            <h2 class="post-page__sim-title">
+                Похожие <span class="underline">статьи</span>
+            </h2>
+            <p class="post-page__sim-sub">
+                Выберите то что подходит именно вам!
+            </p>
+            <div class="wrapper">
+                <div class='carousel post-page__slider'>
+                    <div class="carousel__inner">
+                        <div class="carousel__swiper swiper-container post-page__slider">
+                            <div class="swiper-wrapper">
+                                {% for other in other_posts %}
+                                    <div class="swiper-slide">
+                                        <div class='blog-slide post-page__slide'>
+                                            <div class="blog-slide__frame"
+                                                 style='background-image: url("/media/{{ other.preview_pic }}")'></div>
+                                            <div class="blog-slide__info">
+                                                <p class="blog-slide__title">{{ other.name }}</p>
+                                                <div class="blog-slide__misc">
+                                                    <p class="blog-slide__date">{{ other.pub_date }}</p>
+                                                    <p class="blog-slide__time"></p>
+                                                    <p class="blog-slide__likes">
+                                                        <img src='../static/images/like.svg' alt=""
+                                                             class="blog-slide__heart"/>
+                                                        {{ other.liked|length }}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer class="footer">
+    <div class="footer__main">
+        <div class="wrapper footer__inner">
+            <div class="footer__links">
+                <a class="footer__link" href="{% url 'trainers' %}">
+                    Тренеры
+                </a>
+                <a class="footer__link" href="/">
+                    Сообщество
+                </a>
+                <a class="footer__link">Соглашение</a>
+                <a class="footer__link" href="{% url 'programs' %}">
+                    Программы
+                </a>
+                <a class="footer__link" href="{% url 'start' %}">
+                    Тарифы
+                </a>
+                <a class="footer__link">Обработка данных</a>
+                <a class="footer__link" href="{% url 'blog' %}">
+                    Блог
+                </a>
+                <a class="footer__link">Тренерам</a>
+                <a class="footer__link">Свяжитесь с нами</a>
+                <a class="footer__link"></a>
+            </div>
+            <div class="footer__payment">
+                <p class="footer__link n">Способы оплаты на сайте:</p>
+                <div class="footer__payment-row">
+                    <img src="../static/images/payment/mir.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/visa.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/mc.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/maestro.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/alpha.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/pay-pal.svg" alt="" class="footer__payment-icon"/>
+                </div>
+                <div class="footer__payment-row second">
+                    <img src="../static/images/payment/google.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/apple.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/tele2.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/yandex.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/mts.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/beeline.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/qiwi.svg" alt="" class="footer__payment-icon"/>
+                </div>
+            </div>
+            <div class="footer__misc">
+                <a class="footer__logo-link" href="/">
+                    <img src="../static/images/logo-gray.svg" class="footer__logo">
+                </a>
+                <div class="footer__socials">
+                    <a href="" class="footer__social">
+                        <img src="../static/images/instagram.svg" alt="" class="footer__social-icon"/>
+                    </a>
+                    <a href="" class="footer__social">
+                        <img src="../static/images/youtube.svg" alt="" class="footer__social-icon"/>
+                    </a>
+                    <a href="" class="footer__social">
+                        <img src="../static/images/vk.svg" alt="" class="footer__social-icon"/>
+                    </a>
+                    <a href="" class="footer__social">
+                        <img src="../static/images/telegram.svg" alt="" class="footer__social-icon"/>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer__creds">© 2022 SMARTFIT. Все права защищены</div>
+</footer>
+</body>
+<script>
+    const mobileOpened = () => {
+        const buttonMobileMenu = document.getElementById('button-menu-mobile')
+        buttonMobileMenu.classList.toggle('hidden')
+        buttonMobileMenu.classList.toggle('opened')
+        const mobileMenu = document.getElementById('menu-mobile')
+        mobileMenu.classList.toggle('hidden')
+        mobileMenu.classList.toggle('opened')
+    }
+    const crosses = document.querySelectorAll(".questions__item-button")
+    const questions = document.querySelectorAll(".questions__item-body")
+    const handler = (index) => {
+        for (let j = 0; j < crosses.length; j++) {
+            if (crosses[j] !== crosses[index]) {
+                crosses[j].classList.remove("_opened")
+                questions[j].classList.remove("_opened")
+            }
+            crosses[index].classList.toggle("_opened")
+            questions[index].classList.toggle("_opened")
+        }
+    }
+    const loginModal = () => {
+        const loginModal = document.getElementById('login-modal-box')
+        const loginBackground = document.getElementById("login-modal-background")
+        loginModal.classList.toggle('modal-disabled')
+        loginBackground.classList.toggle('modal-disabled')
+    }
+</script>
+</html>

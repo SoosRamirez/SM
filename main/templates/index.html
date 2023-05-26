@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SMARTFIT</title>
+    <link rel="stylesheet" href="{%  static '/fonts/../static/fonts/stylesheet.css' %}">
+    <link rel="stylesheet" href="{% static 'css/../static/css/SF_main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/../static/css/SF_components.css' %}">
+    <link rel="stylesheet" href="{% static 'css/../static/css/SF_lk.css' %}">
+    <link rel="stylesheet" href="{% static 'css/../static/css/modal.css' %}">
+    <link rel="stylesheet" href="{% static 'css/../static/css/index_add.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+    <link rel="icon" href="{% static '/../static/favicon.ico' %}" type="image/x-icon">
+    <link rel="shortcut icon" href="{% static '../static/favicon.ico' %}" type="image/x-icon">
+</head>
+<body>
+<header {% if user.is_authenticated %}class="header logged" {% else %}class="header"{% endif %}>
+    <div class="modal-background modal-disabled" id='login-modal-background'></div>
+    <div class="modal modal-disabled" id='login-modal-box'>
+        <div class="modal-content">
+            <div class="modal-close" onclick=loginModal()>
+                <img src="{% static 'images/../static/images/modal-cross.svg' %}" alt="" class="modal-close-img">
+            </div>
+            <div class="login-modal">
+                <form action="{% url 'login' %}" method="post">{% csrf_token %}
+                    <div class="login-modal__top">
+                        <h2 class="modal-title">
+                            Вход в аккаунт
+                        </h2>
+                    </div>
+                    <div class="login-modal__content">
+                        <label class="text-field__label">
+                            Ваш логин
+                            <div class="text-field__box">
+                                <input type="text" class='text-field' placeholder="Адрес электронной почты" name="email">
+                            </div>
+                        </label>
+                        <label class="text-field__label">
+                            Ваш пароль
+                            <div class="text-field__box">
+                                <input type="password" class='text-field' placeholder="Пароль" name="password"
+                                       id="id_password">
+                                <i class="far fa-eye" id="togglePassword"
+                                   style="margin-left: -30px; cursor: pointer;"></i>
+                            </div>
+                        </label>
+                    </div>
+                    <button class='button login-modal__button' type="submit">
+                        <div class="button__inner">
+                            Войти в аккаунт
+                        </div>
+                    </button>
+                    <p class="login-modal__bottom">У вас нет аккаунта? <a href="{% url "start" %}"
+                                                                          class="login-modal__link">Создать</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="header__container wrapper">
+        <a href="/" class="header__logo-link">
+            <img src="{% static 'images/../static/images/logo.svg' %}" class="header__logo" alt="">
+        </a>
+        <div class="header__menu">
+            <a href="{% url 'trainers' %}"
+               {% if "trainers" in request.path %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Тренеры</a>
+            <a href="{% url 'programs' %}"
+               {% if "programs" in request.path %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Программы</a>
+            <a href="{% url 'blog' %}"
+               {% if "blog" in request.path %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Блог</a>
+            <a href="{% url 'home' %}"
+               {% if request.path == 'home' %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Сообщество</a>
+        </div>
+        {% if user.is_authenticated %}
+            <a href="{% url "lk" %}" class="header__profile">
+                {{ request.user.username }}
+                <div class="header__avatar">{{ request.user.username.0 }}</div>
+            </a>
+        {% else %}
+            <div class="header__buttons">
+                <a href="{% url 'start' %}">
+                    <button class='button header__button' id="login-button">
+                        <div class="button__inner">
+                            Тренироваться
+                            <img src="{% static 'images/../static/images/bolt.svg' %}" alt="" class="button__icon">
+                        </div>
+                    </button>
+                </a>
+                <button class='button header__button _clear' id="login-button" onclick=loginModal()>
+                    <div class="button__inner">
+                        Войти
+                        <img src="{% static 'images/../static/images/login-icon.svg' %}" alt="" class="button__icon">
+                    </div>
+                </button>
+            </div>
+        {% endif %}
+        <div class='header-mobile__button hidden' onclick="mobileOpened()" id="button-menu-mobile">
+            <div class="header-mobile__line line"></div>
+        </div>
+        <div class='header-mobile__menu hidden' id="menu-mobile">
+            <a href="{% url 'trainers' %}"
+               {% if "trainers" in request.path %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Тренеры</a>
+            <a href="{% url 'programs' %}"
+               {% if "programs" in request.path %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Программы</a>
+            <a href="{% url 'blog' %}"
+               {% if "blog" in request.path %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Блог</a>
+            <a href="{% url 'home' %}"
+               {% if request.path == 'home' %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Сообщество</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'lk' %}" class="header__profile" href="{% url 'lk' %}"
+                   class="header__profile" onclick="mobileOpened()">
+                    {{ request.user.username }}
+                    <div class="header__avatar">{{ request.user.username.0 }}</div>
+                </a>
+            {% else %}
+                <div class="header-mobile__buttons">
+                    <a href="{% url "start" %}">
+                        <button class='button header__button' id="login-button"
+                                onclick="mobileOpened()">
+                            <div class="button__inner">
+                                Тренироваться
+                                <img src="{% static 'images/../static/images/bolt.svg' %}" alt="" class="button__icon">
+                            </div>
+                        </button>
+                    </a>
+                    <button class='button _clear header__button last' onclick="mobileOpened(); loginModal()">
+                        <div class="button__inner">
+                            Войти
+                        </div>
+                    </button>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</header>
+<div class="main-page page main">
+    <div class="inner wrapper">
+        <div class="hero">
+            <div class="hero__left">
+                <p class="hero__subtitle">Фитнес от SmartFit</p>
+                <h1 class="hero__title">
+                    Ваше здоровое тело - <br/> наша
+                    <span class="underline">общая</span> цель
+                </h1>
+                <div class="hero__features">
+                    <div class="hero__item">
+                        <img src="{% static 'images/../static/images/check.svg' %}" alt="" class="hero__item-icon"/>
+                        Доступ к платформе с любого устройства
+                    </div>
+                    <div class="hero__item">
+                        <img src="{% static 'images/../static/images/check.svg' %}" alt="" class="hero__item-icon"/>
+                        Более 20 готовых программ тренировок
+                    </div>
+                    <div class="hero__item">
+                        <img src="{% static 'images/../static/images/check.svg' %}" alt="" class="hero__item-icon"/>
+                        Новые тренировки каждый месяц
+                    </div>
+                </div>
+                <a href="{% url 'start' %}">
+                    <button class='button hero__button'>
+                        <div class="button__inner">
+                            Начать тренировку
+                            <img src="{% static 'images/../static/images/bolt.svg' %}" alt="" class="button__icon">
+                        </div>
+                    </button>
+                </a>
+            </div>
+            <div class="hero__right">
+                <img src="{% static 'images/../static/images/hero.png' %}" alt="" class="hero__image"/>
+                <button class='button hero__button mobile' formaction="{% url 'start' %}">
+                    <div class="button__inner">
+                        Начать тренировку
+                        <img src="{% static 'images/../static/images/bolt.svg' %}" alt="" class="button__icon">
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <div class="programs">
+            <h2 class="programs__title">
+                Выберите программу, которая подходит именно
+                <span class="underline small">вам</span>
+            </h2>
+            <p class="programs__subtitle _18 center">
+                Ваши личные цели требуют индивидуального подхода. <br/> Именно
+                поэтому вы сами выбираете свой путь!
+            </p>
+            <div class="programs__slider">
+                <div class="wrapper">
+                    <div class='carousel main-programs'>
+                        <div class="carousel__inner">
+                            <div class="carousel__swiper swiper-container main-programs">
+                                <div class="swiper-wrapper">
+                                    {% for i in programs_list %}
+                                        <div class="swiper-slide">
+                                            <a href="{% url 'program' i.id %}">
+                                                <div class="program-slide">
+                                                    <div class="program-slide__frame"
+                                                         style='background-image:url("/media/{{ i.preview_pic }}");background-size:cover;background-position:center'>
+                                                    </div>
+                                                    <div class="program-slide__bottom">
+                                                        <p class="program-slide__name">{{ i.name }}</p>
+                                                        <div class="program-slide__info">
+                                                            <div class="program-slide__item">
+                                                                <img src="{% static 'images/../static/images/videos.svg' %}" alt=""
+                                                                     class="program-slide__item-icon"/>
+                                                                {{ i.amount_of_workouts }}
+                                                            </div>
+                                                            <div class="program-slide__item">
+                                                                <img src="{% static 'images/../static/images/time.svg' %}" alt=""
+                                                                     class="program-slide__item-icon"/>
+                                                                {{ i.length }}
+                                                            </div>
+                                                            <div class="program-slide__item">
+                                                                <img src="{% static 'images/../static/images/calories.svg' %}" alt=""
+                                                                     class="program-slide__item-icon"/>
+                                                                {{ i.calories }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        {% if request.user_agent.is_mobile %}
+                        {% else %}
+                            <div class='carousel__arrow-prev carouser__arrow main-programs__prev absolute'></div>
+                            <div class='carousel__arrow-next carouser__arrow main-programs__next absolute'></div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="why">
+            <h2 class="why__title left">
+                Почему SmartFit вам
+                <span class="underline small">подходит</span>?
+            </h2>
+            <div class="why__box">
+                <div class="why__item">
+                    <img src="{% static 'images/../static/images/why_1.svg' %}" alt="" class="why__item-image"/>
+                    <p class="why__item-title">Тренировки в онлайн-формате</p>
+                    <p class="why__item-desc _16">
+                        Вы не тратите своё время на лишнее. Занимайтесь онлайн когда
+                        удобно вам!
+                    </p>
+                </div>
+                <div class="why__item">
+                    <img src="{% static 'images/../static/images/why_2.svg' %}" alt="" class="why__item-image"/>
+                    <p class="why__item-title">Не нужен специальный инвентарь</p>
+                    <p class="why__item-desc _16">
+                        Упражнения не требуют покупку особых снарядов. Вам нужно только
+                        желание.
+                    </p>
+                </div>
+                <div class="why__item">
+                    <img src="{% static 'images/../static/images/why_3.svg' %}" alt="" class="why__item-image"/>
+                    <p class="why__item-title">Экономия и эффективность</p>
+                    <p class="why__item-desc _16">
+                        Подписка значительно дешевле, чем покупка абонемента и занятия с
+                        тренером.
+                    </p>
+                </div>
+                <div class="why__item">
+                    <img src="{% static 'images/../static/images/why_4.svg' %}" alt="" class="why__item-image"/>
+                    <p class="why__item-title">Доступ сразу ко всем программам</p>
+                    <p class="why__item-desc _16">
+                        Оформляя подписку, вы получаете доступ сразу ко всем программам
+                        на сайте.
+                    </p>
+                </div>
+                <div class="why__item">
+                    <img src="{% static 'images/../static/images/why_5.svg' %}" alt="" class="why__item-image"/>
+                    <p class="why__item-title">Для любого уровня подготовки</p>
+                    <p class="why__item-desc _16">
+                        Программы тренировок составлены как для новичков, так и для
+                        людей с опытом.
+                    </p>
+                </div>
+                <div class="why__item">
+                    <img src="{% static 'images/../static/images/why_6.svg' %}" alt="" class="why__item-image"/>
+                    <p class="why__item-title">Готовые программы питания</p>
+                    <p class="why__item-desc _16">
+                        Вместе с видеоуроками вы получаете рекомендации по вашему
+                        рациону.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="connect">
+            <div class="connect__phone"></div>
+            <div class="connect__box">
+                <h2 class="connect__title left">
+                    Подключайте <br/>
+                    к платформе <br/>
+                    свои устройства <br/>
+                    для удобства <br/>
+                </h2>
+                <p class="_18 connect__desc">
+                    Установите на свое устройство приложение <br/> и тренируйтесь с нами в любом месте
+                </p>
+                <div class="connect__download">
+                    <a href="" class="connect__download-link">
+                        <img src="{% static 'images/../static/images/appstore.svg' %}" alt="" class="connect__download-img"/>
+                    </a>
+                    <a href="" class="connect__download-link">
+                        <img src="{% static 'images/../static/images/google-play.svg' %}" alt="" class="connect__download-img"/>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="main-blog">
+            <h2 class="main-blog__title">
+                Прокачайте свои <br/> знания на нашем <span class="underline small">блоге</span>
+            </h2>
+            <p class="_18 main-blog__subtitle center">
+                Начните лучше понимать своё тело
+            </p>
+            <div class="main-blog__box">
+                <div class="wrapper">
+                    <div class='carousel main-blog__slider'>
+                        <div class="carousel__inner">
+                            <div class="carousel__swiper swiper-container main-blog__slider">
+                                <div class="swiper-wrapper">
+                                    {% for i in blog %}
+                                        <div class="swiper-slide">
+                                            <a href="{% url 'post' i.id %}">
+                                                <div class='blog-slide main-blog__slide'>
+                                                    <div class="blog-slide__frame"
+                                                         style='background-image: url("/media/{{ i.preview_pic }}")'></div>
+                                                    <div class="blog-slide__info">
+                                                        <p class="blog-slide__title">{{ i.name }}</p>
+                                                        <div class="blog-slide__misc">
+                                                            <p class="blog-slide__date">{{ i.pub_date }}</p>
+                                                            <p class="blog-slide__time"></p>
+                                                            <p class="blog-slide__likes">
+                                                                <img src="{% static 'images/../static/images/like.svg' %}" alt=""
+                                                                     class="blog-slide__heart"/>
+                                                                {{ i.likes }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <a href="{% url 'start' %}">
+
+                <button class='button main-blog__button' formaction="{% url 'start' %}">
+                    <div class="button__inner">
+                        начать тренировку
+                        <img src="{% static 'images/../static/images/bolt.svg' %}" alt="" class="button__icon">
+                    </div>
+                </button>
+            </a>
+        </div>
+
+        <div class="video">
+            <div class="video__left">
+                <button class='button video__button'>
+                    <div class="button__inner">
+                        видео о проекте
+                        <img src="{% static 'images/../static/images/play-circle.svg' %}" alt="" class="button__icon">
+                    </div>
+                </button>
+            </div>
+            <div class="video__right">
+                <h2 class="video__title left">
+                    С чего начинается ваш
+                    <span class="underline small">результат</span>?
+                </h2>
+                <p class="_18 video__desc">
+                    Вы давно мечтаете похудеть, нарастить <br/> мышечную массу или сформировать
+                    красивый рельеф? С платформой SmartFit вам откроются новые возможности
+                    онлайн-фитнеса с гарантированным результатом! <br/> <br/>
+                    Наша команда тренеров с многолетним опытом подготовила программы
+                    видеотренировок для различных целей: похудение, набор массы, рельеф,
+                    растяжка и многое другое. <br/> <br/>
+                    Ваш результат начинается со SmartFit! Создайте тело мечты!
+                </p>
+            </div>
+        </div>
+
+        <div class="main-trainers">
+            <h2 class="main-trainers__title">
+                Наша команда <span class="underline small">экспертов</span>
+            </h2>
+            <p class="main-trainers__subtitle _18 center">
+                Занимайтесь под руководством профессионалов
+            </p>
+            <div class="main-trainers__box">
+                <div class="wrapper">
+                    <div class='carousel main-trainers__slider'>
+                        <div class="carousel__inner">
+                            <div class="carousel__swiper swiper-container main-trainers__slider">
+                                <div class="swiper-wrapper">
+                                    {% for i in trainers %}
+                                        <div class="swiper-slide">
+                                            <a href="{% url 'trainer' i.id %}">
+                                                <div class="trainer-slide">
+                                                    <div class="trainer-slide__frame"
+                                                         style='background-image: url("/media/{{ i.preview_pic }}")'></div>
+                                                    <div class="trainer-slide__info">
+                                                        <p class="trainer-slide__name">{{ i.name }}</p>
+                                                        <div class="trainer-slide__misc">
+                                                            <div class="trainer-slide__item">
+                                                                <img src="{% static 'images/../static/images/videos.svg' %}" alt=""
+                                                                     class="trainer-slide__item-icon"/>
+                                                                {{ i.workouts }}
+                                                            </div>
+                                                            <div class="trainer-slide__item">
+                                                                <img src="{% static 'images/../static/images/apps.svg' %}" alt=""
+                                                                     class="trainer-slide__item-icon"/>
+                                                                {{ i.programs }}
+                                                            </div>
+                                                            <div class="trainer-slide__item">
+                                                                <img src="{% static 'images/../static/images/user.svg' %}" alt=""
+                                                                     class="trainer-slide__item-icon"/>
+                                                                {{ i.subscribers }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="special">
+            <img src="{% static 'images/../static/images/special.png' %}" alt="" class="special__image"/>
+            <div class="special__inner">
+                <h2 class="special__title left">
+                    Тренировки, подобранные <br/> специально для вас!
+                </h2>
+                <p class="special__subtitle _16 left">
+                    Оформите подписку и тренируйтесь когда удобно <br/> и где удобно: дома, в отпуске, в командировке.
+                </p>
+                <div class="special__buttons">
+                    <button class='button special__button'>
+                        <div class="button__inner">
+                            Тренировки
+                            <img src="{% static 'images/../static/images/bolt.svg' %}" alt="" class="button__icon">
+                        </div>
+                    </button>
+                    <button class='button special__button _clear clear'>
+                        <div class="button__inner">
+                            Подробнее
+                            <img src="{% static 'images/../static/images/search.svg' %}" alt="" class="button__icon">
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="reviews">
+        <div class="reviews__inner wrapper">
+            <h2 class="reviews__title center">
+                <span class="underline small">Отзывы</span>
+            </h2>
+            <p class="_18 reviews__subtitle center">Вот что о нас говорят подопечные</p>
+            <div class="reviews__box">
+                <div class='carousel reviews'>
+                    <div class="carousel__inner">
+                        <div class="carousel__swiper swiper-container reviews">
+                            <div class="swiper-wrapper">
+                                {% for i in reviews %}
+                                    <div class="swiper-slide">
+                                        <div class='review-slide'>
+                                            <div class="review-slide__frame" style='background-image: url("/media/{{ i.image }}")'>
+                                            </div>
+                                            <div class="review-slide__info">
+                                                <p class="review-slide__name">{{ i.name }}</p>
+                                                <p class="review-slide__text _16">{{ i.text }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class='carousel__arrows'>
+                        <div class='carousel__arrow-prev carouser__arrow reviews__prev'></div>
+                        <div class='carousel__arrow-next carouser__arrow reviews__next'></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="reviews">
+        <div class="reviews__inner wrapper">
+            <h2 class="reviews__title center">
+                <span class="underline small">Отзывы</span>
+            </h2>
+            <p class="_18 reviews__subtitle center">Вот что о нас говорят подопечные</p>
+            <div class="reviews__box">
+                <div class="wrapper">
+                    <div class='carousel reviews'>
+                        <div class="carousel__inner">
+                            <div class="carousel__swiper swiper-container reviews">
+                                <div class="swiper-wrapper">
+                                    {% for i in reviews %}
+                                        <div class="swiper-slide">
+                                            <div class='review-slide'>
+                                                <div class="review-slide__frame" style='
+                                                        background-image: url("/media/{{ i.image }}")'>
+                                                </div>
+                                                <div class="review-slide__info">
+                                                    <p class="review-slide__name">{{ i.name }}</p>
+                                                    <p class="review-slide__text _16">{{ i.text }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='carousel__arrows'>
+                        <div class='carousel__arrow-prev carouser__arrow reviews__prev'></div>
+                        <div class='carousel__arrow-next carouser__arrow reviews__next'></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="questions">
+        <div class="wrapper questions__inner">
+            <h2 class="questions__title">
+                Остались <span class="underline small">вопросы</span>?
+            </h2>
+            <p class="questions__subtitle _18 center">Мы собрали самые часто задаваемые вопросы для вас</p>
+            <div class="questions__box">
+                {% for i in questions %}
+                    <div class="questions__item" onclick="handler({{ forloop.counter }}-1)">
+                        <div class="questions__item-top">
+                            <p class="questions__item-title">{{ i.title }}</p>
+                            <img src="{% static 'images/../static/images/cross.svg' %}" alt="" class='questions__item-button'>
+                        </div>
+                        <div class='questions__item-body'>
+                            {{ i.body }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+<footer class="footer">
+    <div class="footer__main">
+        <div class="wrapper footer__inner">
+            <div class="footer__links">
+                <a class="footer__link" href="{% url 'trainers' %}">
+                    Тренеры
+                </a>
+                <a class="footer__link" href="/">
+                    Сообщество
+                </a>
+                <a class="footer__link">Соглашение</a>
+                <a class="footer__link" href="{% url 'programs' %}">
+                    Программы
+                </a>
+                <a class="footer__link" href="{% url 'start' %}">
+                    Тарифы
+                </a>
+                <a class="footer__link">Обработка данных</a>
+                <a class="footer__link" href="{% url 'blog' %}">
+                    Блог
+                </a>
+                <a class="footer__link">Тренерам</a>
+                <a class="footer__link">Свяжитесь с нами</a>
+                <a class="footer__link"></a>
+            </div>
+            <div class="footer__payment">
+                <p class="footer__link n">Способы оплаты на сайте:</p>
+                <div class="footer__payment-row">
+                    <img src="{% static 'images/payment/../static/images/payment/mir.svg' %}" alt="" class="footer__payment-icon"/>
+                    <img src="{% static 'images/payment/../static/images/payment/visa.svg' %}" alt="" class="footer__payment-icon"/>
+                    <img src="{% static 'images/payment/../static/images/payment/mc.svg' %}" alt="" class="footer__payment-icon"/>
+                    <img src="{% static 'images/payment/../static/images/payment/maestro.svg' %}" alt="" class="footer__payment-icon"/>
+                    <img src="{% static 'images/payment/../static/images/payment/alpha.svg' %}" alt="" class="footer__payment-icon"/>
+                    <img src="{% static 'images/payment/../static/images/payment/pay-pal.svg' %}" alt="" class="footer__payment-icon"/>
+                </div>
+                <div class="footer__payment-row second">
+                    <img src="{% static 'images/payment/../static/images/payment/google.svg' %}" alt="" class="footer__payment-icon"/>
+                    <img src="{% static 'images/payment/../static/images/payment/apple.svg' %}" alt="" class="footer__payment-icon"/>
+                    <img src="{% static 'images/payment/../static/images/payment/tele2.svg' %}" alt="" class="footer__payment-icon"/>
+                    <img src="{% static 'images/payment/../static/images/payment/yandex.svg' %}" alt="" class="footer__payment-icon"/>
+                    <img src="{% static 'images/payment/../static/images/payment/mts.svg' %}" alt="" class="footer__payment-icon"/>
+                    <img src="{% static 'images/payment/../static/images/payment/beeline.svg' %}" alt="" class="footer__payment-icon"/>
+                    <img src="{% static 'images/payment/../static/images/payment/qiwi.svg' %}" alt="" class="footer__payment-icon"/>
+                </div>
+            </div>
+            <div class="footer__misc">
+                <a class="footer__logo-link" href="/">
+                    <img src="{% static 'images/../static/images/logo-gray.svg' %}" class="footer__logo" alt="">
+                </a>
+                <div class="footer__socials">
+                    <a href="" class="footer__social">
+                        <img src="{% static 'images/../static/images/instagram.svg' %}" alt="" class="footer__social-icon"/>
+                    </a>
+                    <a href="" class="footer__social">
+                        <img src="{% static 'images/../static/images/youtube.svg' %}" alt="" class="footer__social-icon"/>
+                    </a>
+                    <a href="" class="footer__social">
+                        <img src="{% static 'images/../static/images/vk.svg' %}" alt="" class="footer__social-icon"/>
+                    </a>
+                    <a href="" class="footer__social">
+                        <img src="{% static 'images/../static/images/telegram.svg' %}" alt="" class="footer__social-icon"/>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer__creds">© 2022 SMARTFIT. Все права защищены</div>
+</footer>
+</body>
+<script>
+    const mobileOpened = () => {
+        const buttonMobileMenu = document.getElementById('button-menu-mobile')
+        buttonMobileMenu.classList.toggle('hidden')
+        buttonMobileMenu.classList.toggle('opened')
+        const mobileMenu = document.getElementById('menu-mobile')
+        mobileMenu.classList.toggle('hidden')
+        mobileMenu.classList.toggle('opened')
+    }
+    const crosses = document.querySelectorAll(".questions__item-button")
+    const questions = document.querySelectorAll(".questions__item-body")
+    const handler = (index) => {
+        for (let j = 0; j < crosses.length; j++) {
+            if (crosses[j] !== crosses[index]) {
+                crosses[j].classList.remove("_opened")
+                questions[j].classList.remove("_opened")
+            }
+            crosses[index].classList.toggle("_opened")
+            questions[index].classList.toggle("_opened")
+        }
+    }
+    const loginModal = () => {
+        const loginModal = document.getElementById('login-modal-box')
+        const loginBackground = document.getElementById("login-modal-background")
+        loginModal.classList.toggle('modal-disabled')
+        loginBackground.classList.toggle('modal-disabled')
+    }
+    const togglePassword = document.querySelector('#togglePassword');
+    const password = document.querySelector('#id_password');
+
+    togglePassword.addEventListener('click', function (e) {
+        console.log(password)
+        // toggle the type attribute
+        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+        password.setAttribute('type', type);
+        // toggle the eye slash icon
+        this.classList.toggle('fa-eye-slash');
+    });
+</script>
+<script type="module">
+    import Swiper from 'https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.esm.browser.min.js'
+
+    var galleryTop = new Swiper('.reviews', {
+        centeredSlides: false,
+        loop: false,
+        slidesPerView: "auto",
+        spaceBetween: 40,
+        navigation: {
+            nextEl: `.reviews__next`,
+            prevEl: `.reviews__prev`,
+        },
+    });
+
+</script>
+<script type="module">
+    import Swiper from 'https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.esm.browser.min.js'
+
+    var galleryTop = new Swiper('.main-programs', {
+        centeredSlides: false,
+        loop: false,
+        slidesPerView: "auto",
+        spaceBetween: 40,
+        navigation: {
+            nextEl: `.main-programs__next`,
+            prevEl: `.main-programs__prev`,
+        },
+    });
+
+</script>
+<script type="module">
+    import Swiper from 'https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.esm.browser.min.js'
+
+    var galleryTop = new Swiper('.main-trainers__slider', {
+        centeredSlides: false,
+        loop: false,
+        slidesPerView: "auto",
+        spaceBetween: 40,
+    });
+
+</script>
+</html>

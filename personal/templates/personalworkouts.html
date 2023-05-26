@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SMARTFIT</title>
+    <link rel="stylesheet" href="../static/fonts/stylesheet.css">
+    <link rel="stylesheet" href="../static/css/SF_main.css">
+    <link rel="stylesheet" href="../static/css/SF_components.css">
+    <link rel="stylesheet" href="../static/css/SF_lk.css">
+    <link rel="stylesheet" href="../static/css/modal.css">
+    <link rel="stylesheet" href="../static/css/new.css">
+    <link rel="icon" href="../../favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon">
+</head>
+<body>
+<header class="header logged">
+    <div class="modal-background modal-disabled" id='logout-modal-background'></div>
+    <div class="modal modal-disabled" id='logout-modal-box'>
+        <div class="modal-content">
+            <div class="modal-close" onclick="logoutModal()">
+                <img src="../static/images/modal-cross.svg" alt="" class="modal-close-img"/>
+            </div>
+            <div class="logout-modal">
+                <img src="../static/images/warning.svg" alt="" class="logout-modal__img">
+                <h2 class="modal-title logout-modal__title">Вы уверены?</h2>
+                <p class="logout-modal__sub">
+                    Что хотите выйти из личного кабинета
+                </p>
+                <div class="logout-modal__box">
+                    <button class='button _clear logout-modal__button' onclick="logoutModal()">
+                        <div class="button__inner">
+                            ОТМЕНИТЬ
+                        </div>
+                    </button>
+                    <form action="{% url 'logout' %}">
+                        <button class='button _red logout-modal__button' type="submit">
+                            <div class="button__inner">
+                                ВЫЙТИ
+                            </div>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="header__container wrapper">
+        <a href="/" class="header__logo-link">
+            <img src="../static/images/logo.svg" class="header__logo">
+        </a>
+        <div class="header__menu">
+            <a href="{% url 'trainers' %}"
+               {% if "trainers" in request.path %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Тренеры</a>
+            <a href="{% url 'programs' %}"
+               {% if "programs" in request.path %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Программы</a>
+            <a href="{% url 'blog' %}"
+               {% if "blog" in request.path %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Блог</a>
+            <a href="{% url 'home' %}"
+               {% if request.path == 'home' %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Сообщество</a>
+        </div>
+        <a href="{% url 'lk' %}" class="header__profile">
+            {{ request.user.username }}
+            <div class="header__avatar">{{ request.user.username.0 }}</div>
+        </a>
+        <div class='header-mobile__button hidden' onclick="mobileOpened()" id="button-menu-mobile">
+            <div class="header-mobile__line line"></div>
+        </div>
+        <div class='header-mobile__menu hidden' id="menu-mobile">
+            <a href="{% url 'trainers' %}"
+               {% if "trainers" in request.path %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Тренеры</a>
+            <a href="{% url 'programs' %}"
+               {% if "programs" in request.path %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Программы</a>
+            <a href="{% url 'blog' %}"
+               {% if "blog" in request.path %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Блог</a>
+            <a href="{% url 'home' %}"
+               {% if request.path == 'home' %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Сообщество</a>
+            <a href="{% url 'lk' %}" class="header__profile" href="{% url 'lk' %}"
+               class="header__profile" onclick="mobileOpened()">
+                {{ request.user.username }}
+                <div class="header__avatar">{{ request.user.username.0 }}</div>
+            </a>
+        </div>
+    </div>
+</header>
+<div class="profile">
+    <div class="sidebar">
+        <div class="sidebar__list">
+            <a href="{% url 'lk' %}" {% if 'profile' in request.path %}class="sidebar__item active"
+               {% else %}class="sidebar__item"{% endif %}>
+                <img {% if 'profile' in request.path %}src="../static/images/lk/profile-1.svg"
+                     {% else %}src="../static/images/lk/profile.svg"{% endif %} alt="" class="sidebar__icon">
+                Профиль
+            </a>
+            <a href="{% url 'personalinfo' %}" {% if 'info' in request.path %}class="sidebar__item active"
+               {% else %}class="sidebar__item"{% endif %}>
+                <img {% if 'info' in request.path %}src="../static/images/lk/data-1.svg"
+                     {% else %}src="../static/images/lk/data.svg"{% endif %} alt="" class="sidebar__icon">
+                Данные
+            </a>
+            <a href="{% url 'personalprograms' %}"
+               {% if 'personal/programs' in request.path %}class="sidebar__item active"
+               {% else %}class="sidebar__item"{% endif %}>
+                <img {% if 'personal/programs' in request.path %}src="../static/images/lk/programs-1.svg"
+                     {% else %}src="../static/images/lk/programs.svg"{% endif %} alt="" class="sidebar__icon">
+                Программы
+            </a>
+            <a href="{% url 'personalworkouts' %}"
+               {% if 'personal/workouts' in request.path %}class="sidebar__item active"
+               {% else %}class="sidebar__item"{% endif %}>
+                <img {% if 'personal/workouts' in request.path %}src="../static/images/lk/trainings-1.svg"
+                     {% else %}src="../static/images/lk/trainings.svg"{% endif %} alt="" class="sidebar__icon">
+                Тренировки
+            </a>
+            <a href="{% url 'personalprogres' %}"
+               {% if 'personal/progres' in request.path %}class="sidebar__item active"
+               {% else %}class="sidebar__item"{% endif %}>
+                <img {% if 'personal/progres' in request.path %}src="../static/images/lk/progress-1.svg"
+                     {% else %}src="../static/images/lk/progress.svg"{% endif %} alt="" class="sidebar__icon">
+                Прогресс
+            </a>
+            <a href="{% url 'subscription' %}"
+               {% if 'personal/subscription' in request.path %}class="sidebar__item active"
+               {% else %}class="sidebar__item"{% endif %}>
+                <img {% if 'personal/subscription' in request.path %}src="../static/images/lk/subsc-1.svg"
+                     {% else %}src="../static/images/lk/subs.svg"{% endif %} alt="" class="sidebar__icon">
+                Подписка
+            </a>
+            <div class="sidebar__line"></div>
+            <div class="sidebar__logout" onclick="logoutModal()">
+                <img src="../static/images/lk/logout-1.svg" alt="" class="sidebar__icon">
+                Выход
+            </div>
+        </div>
+    </div>
+    <div class="profile__inner">
+        {% for i in sub %}
+            <div class="trainings">
+                <div class="trainings__top">
+                    <p class="trainings__name">{{ i.program.name }}</p>
+                    <p class="trainings__num">{{ i.workout_stopped }}/{{ i.program.amount_of_workouts }}</p>
+                </div>
+                <div class="trainings__video">
+                    <img src='/media/{{ i.program.main_pic }}' alt="" class="trainings__sample"/>
+                    <img src='../static/images/play-circle.svg' alt="" class="trainings__play"/>
+                </div>
+
+
+                <input type="range" class="scrolling__bar" value="0" id='scrolling__bar' itemref='scrollRef' step="1">
+                <div class="trainings__wrapper" itemref="containerRef" id='trainings__wrapper'>
+                    <div class="trainings__trainings">
+                        {% for k in i.program.workouts %}
+                            <div class="trainings__item">
+                                <p class="trainings__item-num">{{ k.num_in_program }}/{{ i.program.amount_of_workouts }}</p>
+                                <div class="trainings__item-frame"
+                                     style='background-image: url("/media/{{ k.picture_src }}")'>
+                                    <p class="trainings__item-time">{{ k.pub_date }}</p>
+                                    <img src='../static/images/rewind.svg' alt="" class="trainings__item-icon"/>
+                                </div>
+                                <p class="trainings__item-burn">
+                                    <img src='../static/images/fire.svg' alt="" class="trainings__item-fire"/>
+                                    {{ k.calories }} ккал
+                                </p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="trainings__comments">
+                    <div class="trainings__comments-top">
+                        <img src="../static/images/sample-program.png" alt="" class="trainings__program__image">
+                        <div>
+                            <p class="trainings__program-name">Дмитрий Васильев</p>
+                            <p class="trainings__program-title">Стальной пресс</p>
+                        </div>
+                        <div class="last">
+                            <p class="trainings__program-likes">1235
+                                <img src="../static/images/heart.svg" alt="" class="trainings__program-likes"/>
+                            </p>
+                            <p class="trainings__program-completed">123132123 выполнений</p>
+                        </div>
+                    </div>
+                    <Comment/>
+                    <div class="comment">
+                        <div class="comment__top">
+                            <img src="../static/images/comment-avatar.png" alt="" class="comment__image"/>
+                            {#                    картинка пользователя#}
+                            <div class="comment__misc">
+                                <p class="comment__name">Дмитрий</p>
+                                <p class="comment__time">3 месяца назад</p>
+                            </div>
+                        </div>
+                        <div class="comment__text">
+                            Спасибо большое за эту статью, отличные рецепты, использую их каждый день. Очень вкусно и
+                            полезно,
+                            всем рекомендую попробовать хотя бы раз.
+                        </div>
+                    </div>
+                    <Comment/>
+                </div>
+                <div class="trainings__review">
+                    <label class="text-field__label">Ваш отзыв
+                        <div class="text-field__box">
+                            <textarea class='text-field__area text-field' placeholder="Текст отзыва"></textarea>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+<footer class="footer">
+    <div class="footer__main">
+        <div class="wrapper footer__inner">
+            <div class="footer__links">
+                <a class="footer__link" href="{% url 'trainers' %}">
+                    Тренеры
+                </a>
+                <a class="footer__link" href="/">
+                    Сообщество
+                </a>
+                <a class="footer__link">Соглашение</a>
+                <a class="footer__link" href="{% url 'programs' %}">
+                    Программы
+                </a>
+                <a class="footer__link" href="{% url 'start' %}">
+                    Тарифы
+                </a>
+                <a class="footer__link">Обработка данных</a>
+                <a class="footer__link" href="{% url 'blog' %}">
+                    Блог
+                </a>
+                <a class="footer__link">Тренерам</a>
+                <a class="footer__link">Свяжитесь с нами</a>
+                <a class="footer__link"></a>
+            </div>
+            <div class="footer__payment">
+                <p class="footer__link n">Способы оплаты на сайте:</p>
+                <div class="footer__payment-row">
+                    <img src="../static/images/payment/mir.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/visa.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/mc.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/maestro.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/alpha.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/pay-pal.svg" alt="" class="footer__payment-icon"/>
+                </div>
+                <div class="footer__payment-row second">
+                    <img src="../static/images/payment/google.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/apple.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/tele2.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/yandex.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/mts.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/beeline.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/qiwi.svg" alt="" class="footer__payment-icon"/>
+                </div>
+            </div>
+            <div class="footer__misc">
+                <a class="footer__logo-link" href="/">
+                    <img src="../static/images/logo-gray.svg" class="footer__logo">
+                </a>
+                <div class="footer__socials">
+                    <a href="" class="footer__social">
+                        <img src="../static/images/instagram.svg" alt="" class="footer__social-icon"/>
+                    </a>
+                    <a href="" class="footer__social">
+                        <img src="../static/images/youtube.svg" alt="" class="footer__social-icon"/>
+                    </a>
+                    <a href="" class="footer__social">
+                        <img src="../static/images/vk.svg" alt="" class="footer__social-icon"/>
+                    </a>
+                    <a href="" class="footer__social">
+                        <img src="../static/images/telegram.svg" alt="" class="footer__social-icon"/>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer__creds">© 2022 SMARTFIT. Все права защищены</div>
+</footer>
+</body>
+<script>
+    const mobileOpened = () => {
+        const buttonMobileMenu = document.getElementById('button-menu-mobile')
+        buttonMobileMenu.classList.toggle('hidden')
+        buttonMobileMenu.classList.toggle('opened')
+        const mobileMenu = document.getElementById('menu-mobile')
+        mobileMenu.classList.toggle('hidden')
+        mobileMenu.classList.toggle('opened')
+    }
+    const logoutModal = () => {
+        const loginModal = document.getElementById('logout-modal-box')
+        const loginBackground = document.getElementById("logout-modal-background")
+        loginModal.classList.toggle('modal-disabled')
+        loginBackground.classList.toggle('modal-disabled')
+    }
+    const bars = document.querySelectorAll(".scrolling__bar")
+    const boxes = document.querySelectorAll(".trainings__wrapper")
+
+    console.log(boxes, bars)
+
+    for (let i = 0; i < bars.length; i++) {
+        console.log(i, 'i')
+        bars[i].onchange = (e) => {
+            {#console.log(e.target.value, 'e')#}
+            const total = boxes[i].scrollWidth - boxes[i].offsetWidth
+            {#console.log(total)#}
+            boxes[i].scrollLeft = total * (e.target.value / 100)
+        }
+    }
+</script>
+</html>

@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SMARTFIT</title>
+    <link rel="stylesheet" href="../static/fonts/stylesheet.css">
+    <link rel="stylesheet" href="../static/css/SF_main.css">
+    <link rel="stylesheet" href="../static/css/SF_components.css">
+    <link rel="stylesheet" href="../static/css/SF_lk.css">
+    <link rel="stylesheet" href="../static/css/modal.css">
+    <link rel="icon" href="../../favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon">
+</head>
+<body>
+<header class="header logged">
+    <div class="modal-background modal-disabled" id='logout-modal-background'></div>
+    <div class="modal modal-disabled" id='logout-modal-box'>
+        <div class="modal-content">
+            <div class="modal-close" onclick="logoutModal()">
+                <img src="../static/images/modal-cross.svg" alt="" class="modal-close-img"/>
+            </div>
+            <div class="logout-modal">
+                <img src="../static/images/warning.svg" alt="" class="logout-modal__img">
+                <h2 class="modal-title logout-modal__title">Вы уверены?</h2>
+                <p class="logout-modal__sub">
+                    Что хотите выйти из личного кабинета
+                </p>
+                <div class="logout-modal__box">
+                    <button class='button _clear logout-modal__button' onclick="logoutModal()">
+                        <div class="button__inner">
+                            ОТМЕНИТЬ
+                        </div>
+                    </button>
+                    <form action="{% url 'logout' %}">
+                        <button class='button _red logout-modal__button' type="submit">
+                            <div class="button__inner">
+                                ВЫЙТИ
+                            </div>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="header__container wrapper">
+        <a href="/" class="header__logo-link">
+            <img src="../static/images/logo.svg" class="header__logo">
+        </a>
+        <div class="header__menu">
+            <a href="{% url 'trainers' %}"
+               {% if "trainers" in request.path %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Тренеры</a>
+            <a href="{% url 'programs' %}"
+               {% if "programs" in request.path %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Программы</a>
+            <a href="{% url 'blog' %}"
+               {% if "blog" in request.path %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Блог</a>
+            <a href="{% url 'home' %}"
+               {% if request.path == 'home' %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Сообщество</a>
+        </div>
+        <a href="{% url 'lk' %}" class="header__profile">
+            {{ request.user.username }}
+            <div class="header__avatar">{{ request.user.username.0 }}</div>
+        </a>
+        <div class='header-mobile__button hidden' onclick="mobileOpened()" id="button-menu-mobile">
+            <div class="header-mobile__line line"></div>
+        </div>
+        <div class='header-mobile__menu hidden' id="menu-mobile">
+            <a href="{% url 'trainers' %}"
+               {% if "trainers" in request.path %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Тренеры</a>
+            <a href="{% url 'programs' %}"
+               {% if "programs" in request.path %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Программы</a>
+            <a href="{% url 'blog' %}"
+               {% if "blog" in request.path %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Блог</a>
+            <a href="{% url 'home' %}"
+               {% if request.path == 'home' %}class="header__item active"
+               {% else %}class="header__item"{% endif %}>Сообщество</a>
+            <a href="{% url 'lk' %}" class="header__profile" href="{% url 'lk' %}"
+               class="header__profile" onclick="mobileOpened()">
+                {{ request.user.username }}
+                <div class="header__avatar">{{ request.user.username.0 }}</div>
+            </a>
+        </div>
+    </div>
+</header>
+<div class="profile">
+    <div class="sidebar">
+        <div class="sidebar__list">
+            <a href="{% url 'lk' %}" {% if 'profile' in request.path %}class="sidebar__item active"
+               {% else %}class="sidebar__item"{% endif %}>
+                <img {% if 'profile' in request.path %}src="../static/images/lk/profile-1.svg"
+                     {% else %}src="../static/images/lk/profile.svg"{% endif %} alt="" class="sidebar__icon">
+                Профиль
+            </a>
+            <a href="{% url 'personalinfo' %}" {% if 'info' in request.path %}class="sidebar__item active"
+               {% else %}class="sidebar__item"{% endif %}>
+                <img {% if 'info' in request.path %}src="../static/images/lk/data-1.svg"
+                     {% else %}src="../static/images/lk/data.svg"{% endif %} alt="" class="sidebar__icon">
+                Данные
+            </a>
+            <a href="{% url 'personalprograms' %}"
+               {% if 'personal/programs' in request.path %}class="sidebar__item active"
+               {% else %}class="sidebar__item"{% endif %}>
+                <img {% if 'personal/programs' in request.path %}src="../static/images/lk/programs-1.svg"
+                     {% else %}src="../static/images/lk/programs.svg"{% endif %} alt="" class="sidebar__icon">
+                Программы
+            </a>
+            <a href="{% url 'personalworkouts' %}"
+               {% if 'personal/workouts' in request.path %}class="sidebar__item active"
+               {% else %}class="sidebar__item"{% endif %}>
+                <img {% if 'personal/workouts' in request.path %}src="../static/images/lk/trainings-1.svg"
+                     {% else %}src="../static/images/lk/trainings.svg"{% endif %} alt="" class="sidebar__icon">
+                Тренировки
+            </a>
+            <a href="{% url 'personalprogres' %}"
+               {% if 'personal/progres' in request.path %}class="sidebar__item active"
+               {% else %}class="sidebar__item"{% endif %}>
+                <img {% if 'personal/progres' in request.path %}src="../static/images/lk/progress-1.svg"
+                     {% else %}src="../static/images/lk/progress.svg"{% endif %} alt="" class="sidebar__icon">
+                Прогресс
+            </a>
+            <a href="{% url 'subscription' %}"
+               {% if 'personal/subscription' in request.path %}class="sidebar__item active"
+               {% else %}class="sidebar__item"{% endif %}>
+                <img {% if 'personal/subscription' in request.path %}src="../static/images/lk/subsc-1.svg"
+                     {% else %}src="../static/images/lk/subs.svg"{% endif %} alt="" class="sidebar__icon">
+                Подписка
+            </a>
+            <div class="sidebar__line"></div>
+            <div class="sidebar__logout" onclick="logoutModal()">
+                <img src="../static/images/lk/logout-1.svg" alt="" class="sidebar__icon">
+                Выход
+            </div>
+        </div>
+    </div>
+    <div class="profile__inner">
+        <div class="profile__wrapper">
+            <div class="personal">
+                <h3 class="prof">Личные данные</h3>
+                <form action="{% url 'personalinfo' %}" method="post" enctype="multipart/form-data">{% csrf_token %}
+                    <div class="personal__avatar">
+                        {% if info.image %}
+                            <img src="/media/{{ info.image }}" alt="" class="personal__avatar-image">
+
+                        {% else %}
+                            <img src="../static/images/Avatar.svg" alt="" class="personal__avatar-image">
+                        {% endif %}
+                        <div class="personal__avatar-box">
+                            <div class="personal__avatar-buttons">
+                                <input id="file-input" type="file" name="image">
+                                <button class='button _clear personal__button-avatar' type="submit">
+                                    <div class="button__inner">
+                                        Сменить фото
+                                    </div>
+                                </button>
+                                <button class='button personal__button-avatar'>
+                                    <div class="button__inner">
+                                        Удалить
+                                    </div>
+                                </button>
+                            </div>
+                            <p class="personal__avatar-misc">
+                                Допустимые типы файлов JPEG, <br/> GIF or PNG, 150x150px, 1MB
+                            </p>
+                        </div>
+                    </div>
+                    <div class="personal__layout">
+                        <label class="text-field__label">
+                            Ваше имя
+                            <div class="text-field__box">
+                                <input type="text" class='text-field personal__input' name="name"
+                                       placeholder='Имя'
+                                       value="{% if info.name is not None %}{{ info.name }}{% else %}{% endif %}">
+                            </div>
+                        </label>
+                        <div class="personal__buttons-box">
+                            <input type="hidden" value="{{ info.level }}" id="level_input" name="level">
+                            Уровень активности
+                            <div class="personal__buttons">
+                                <button class='button personal__button {% if info.level != '1' %}_clear{% endif %} level_input_button'
+                                        onclick="changeLevel(1)" type="button">
+                                    <div class="button__inner">
+                                        начальный
+                                    </div>
+                                </button>
+                                <button class='button personal__button {% if info.level != '2' %}_clear{% endif %} level_input_button'
+                                        onclick="changeLevel(2)" type="button">
+                                    <div class="button__inner">
+                                        средний
+                                    </div>
+                                </button>
+                                <button class='button personal__button {% if info.level != '3' %}_clear{% endif %} level_input_button'
+                                        onclick="changeLevel(3)" type="button">
+                                    <div class="button__inner">
+                                        эксперт
+                                    </div>
+                                </button>
+
+                            </div>
+                        </div>
+                        <label class="text-field__label">
+                            Ваша фамилия
+                            <div class="text-field__box">
+                                <input type="text" class='text-field personal__input' name="surname"
+                                       placeholder='Фамилия'
+                                       value="{% if info.surname is not None %}{{ info.surname }}{% endif %}">
+                            </div>
+                        </label>
+                        <input type="hidden" name="user" value="{{ request.user.id }}">
+                        <label class="text-field__label">
+                            Ваш вес
+                            <div class="text-field__box">
+                                <input type="text" class='text-field personal__input' name="mass"
+                                       placeholder='Вес'
+                                       value="{% if info.mass is not None %}{{ info.mass }}{% endif %}">
+                            </div>
+                        </label>
+                        <label class="text-field__label">
+                            Ваш телефон
+                            <div class="text-field__box">
+                                <input type="text" class='text-field personal__input' name="mobile"
+                                       placeholder='Телефон'
+                                       value="{% if info.mobile is not None %}{{ info.mobile }}{% endif %}">
+                            </div>
+                        </label>
+                        <label class="text-field__label">
+                            Ваш рост
+                            <div class="text-field__box">
+                                <input type="text" class='text-field personal__input' name="height"
+                                       placeholder='Рост (см)'
+                                       value="{% if info.height is not None %}{{ info.height }}{% endif %}">
+                            </div>
+                        </label>
+                        <label class="text-field__label">
+                            Ваш Email
+                            <div class="text-field__box">
+                                <input type="text" class='text-field personal__input' name="email"
+                                       placeholder='Адрес электронной почты'
+                                       value="{% if info.email is not None %}{{ info.email }}{% endif %}">
+                            </div>
+                        </label>
+                        <label class="text-field__label">
+                            Ваш пол
+                            <div class="text-field__box">
+                                <input type="text" class='text-field personal__input' name="sex"
+                                       placeholder='Пол'
+                                       value="{% if info.sex is not None %}{{ info.sex }}{% endif %}">
+                            </div>
+                        </label>
+                        <label class="text-field__label">
+                            Ваш Instagram
+                            <div class="text-field__box">
+                                <input type="text" class='text-field personal__input' name="instagram"
+                                       placeholder='/instagram.com'
+                                       value="{% if info.instagram is not None %}{{ info.instagram }}{% endif %}">
+                            </div>
+                        </label>
+                        <label class="text-field__label">
+                            Ваша дата рождения
+                            <div class="text-field__box">
+                                <input type="date" class='text-field personal__input' name="birth"
+                                       placeholder='Ваша дата рождения'
+                                       value="
+                                               {% if info.birth is not None %}{{ info.birthdate|date:"Y-m-d" }}{% endif %}">
+                            </div>
+                        </label>
+                        <div class="spacer"></div>
+                        <div class="personal__bottom">
+                            <button class='button personal__button _clear' onclick="passwordModal()">
+                                <div class="button__inner">
+                                    Сменить пароль
+                                </div>
+                            </button>
+                            <button class='button personal__button' type="submit">
+                                <div class="button__inner">
+                                    Изменить данные
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<footer class="footer">
+    <div class="footer__main">
+        <div class="wrapper footer__inner">
+            <div class="footer__links">
+                <a class="footer__link" href="{% url 'trainers' %}">
+                    Тренеры
+                </a>
+                <a class="footer__link" href="/">
+                    Сообщество
+                </a>
+                <a class="footer__link">Соглашение</a>
+                <a class="footer__link" href="{% url 'programs' %}">
+                    Программы
+                </a>
+                <a class="footer__link" href="{% url 'start' %}">
+                    Тарифы
+                </a>
+                <a class="footer__link">Обработка данных</a>
+                <a class="footer__link" href="{% url 'blog' %}">
+                    Блог
+                </a>
+                <a class="footer__link">Тренерам</a>
+                <a class="footer__link">Свяжитесь с нами</a>
+                <a class="footer__link"></a>
+            </div>
+            <div class="footer__payment">
+                <p class="footer__link n">Способы оплаты на сайте:</p>
+                <div class="footer__payment-row">
+                    <img src="../static/images/payment/mir.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/visa.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/mc.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/maestro.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/alpha.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/pay-pal.svg" alt="" class="footer__payment-icon"/>
+                </div>
+                <div class="footer__payment-row second">
+                    <img src="../static/images/payment/google.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/apple.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/tele2.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/yandex.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/mts.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/beeline.svg" alt="" class="footer__payment-icon"/>
+                    <img src="../static/images/payment/qiwi.svg" alt="" class="footer__payment-icon"/>
+                </div>
+            </div>
+            <div class="footer__misc">
+                <a class="footer__logo-link" href="/">
+                    <img src="../static/images/logo-gray.svg" class="footer__logo">
+                </a>
+                <div class="footer__socials">
+                    <a href="" class="footer__social">
+                        <img src="../static/images/instagram.svg" alt="" class="footer__social-icon"/>
+                    </a>
+                    <a href="" class="footer__social">
+                        <img src="../static/images/youtube.svg" alt="" class="footer__social-icon"/>
+                    </a>
+                    <a href="" class="footer__social">
+                        <img src="../static/images/vk.svg" alt="" class="footer__social-icon"/>
+                    </a>
+                    <a href="" class="footer__social">
+                        <img src="../static/images/telegram.svg" alt="" class="footer__social-icon"/>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer__creds">© 2022 SMARTFIT. Все права защищены</div>
+</footer>
+</body>
+<script>
+    const mobileOpened = () => {
+        const buttonMobileMenu = document.getElementById('button-menu-mobile')
+        buttonMobileMenu.classList.toggle('hidden')
+        buttonMobileMenu.classList.toggle('opened')
+        const mobileMenu = document.getElementById('menu-mobile')
+        mobileMenu.classList.toggle('hidden')
+        mobileMenu.classList.toggle('opened')
+    }
+    const logoutModal = () => {
+        const loginModal = document.getElementById('logout-modal-box')
+        const loginBackground = document.getElementById("logout-modal-background")
+        loginModal.classList.toggle('modal-disabled')
+        loginBackground.classList.toggle('modal-disabled')
+    }
+    const passwordModal = () => {
+        const loginModal = document.getElementById('password-modal-box')
+        const loginBackground = document.getElementById("password-modal-background")
+        loginModal.classList.toggle('modal-disabled')
+        loginBackground.classList.toggle('modal-disabled')
+    }
+    const changeLevel = (index) => {
+        const buttons = document.querySelectorAll('.level_input_button')
+        document.getElementById('level_input').value = index;
+        for (let j = 0; j < buttons.length; j++) {
+            if (j != (index - 1)) {
+                buttons[j].classList.add('_clear')
+            }
+        }
+        buttons[index - 1].classList.remove('_clear')
+    }
+</script>
+</html>
